@@ -16,6 +16,7 @@ This is my submission for the internship assignment. It is a full-stack monorepo
 
 ## Technical Highlights
 * **Dual Database Modes**: Configured to run against remote Supabase PostgreSQL in production, falling back to local SQLite (`store_rating.sqlite`) for instant local testing.
+* **Automatic Startup Seeding**: If the database (Supabase PostgreSQL in production or SQLite in development) contains 0 users upon backend server startup, it programmatically triggers the database seeding script so the quick demo logins work out-of-the-box.
 * **Keep-Alive Cron**: A GitHub Actions workflow (`keep-alive.yml`) pings the backend `/api/health` endpoint every 14 minutes to prevent Render's free tier from sleeping.
 * **Minimalist Design**: Minimalist monochrome theme using vanilla CSS, with full SPA routing rewrites handled on Vercel to support page refreshing.
 
