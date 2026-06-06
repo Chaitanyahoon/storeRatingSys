@@ -1,14 +1,19 @@
 const { sequelize, User, Store, Rating } = require('./models');
 require('dotenv').config();
 
-const seed = async () => {
+const seed = async (options = { force: true }) => {
   try {
     await sequelize.authenticate();
     console.log('Connected to DB for seeding.');
 
-    // Force recreate tables
-    await sequelize.sync({ force: true });
-    console.log('Tables recreated.');
+    // Conditionally force recreate tables
+    if (options.force) {
+      await sequelize.sync({ force: true });
+      console.log('Tables recreated.');
+    } else {
+      await sequelize.sync();
+      console.log('Tables synchronized.');
+    }
 
     // 1. Create Users (Names are 20-60 characters, Passwords meet requirements)
     const users = await User.bulkCreate([
@@ -114,11 +119,16 @@ const seed = async () => {
     console.log('Ratings seeded successfully.');
 
     console.log('Database seeded fully!');
-    process.exit(0);
   } catch (error) {
     console.error('Seeding failed:', error);
-    process.exit(1);
+    throw error;
   }
 };
 
-seed();
+if (require.main === module) {
+  seed({ force: true })
+    .then(() => process.exit(0))
+    .catch(() => process.exit(1));
+}
+
+module.exports = seed;
